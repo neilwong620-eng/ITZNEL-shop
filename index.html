@@ -8,18 +8,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body { 
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            background: linear-gradient(135deg, #0f0c29 0%, #1a1a2e 50%, #05050a 100%);
             background-attachment: fixed; min-height: 100vh;
             font-family: "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif;
             display: flex; justify-content: center; padding: 20px; overflow-x: hidden;
         }
         @keyframes neon-flicker {
-            0%, 18%, 22%, 25%, 53%, 57%, 100% { text-shadow: 0 0 4px #fff, 0 0 11px #fff, 0 0 40px #0fa; color: #fff; }
-            20%, 24%, 55% { text-shadow: none; color: #052a1a; }
+            0%, 18%, 22%, 25%, 53%, 57%, 100% { text-shadow: 0 0 4px #fff, 0 0 11px #fff, 0 0 40px #ff7a00; color: #fff; }
+            20%, 24%, 55% { text-shadow: none; color: #3d1c00; }
         }
         @keyframes super-glow {
             0%, 100% { opacity: 0.4; filter: brightness(100%); }
-            50% { opacity: 1; filter: brightness(180%); text-shadow: 0 0 20px #0fa; color: #fff; }
+            50% { opacity: 1; filter: brightness(180%); text-shadow: 0 0 20px #ff7a00; color: #ff7a00; }
         }
         @keyframes receipt-flow {
             from { max-height: 0; opacity: 0; transform: translateY(-10px); }
@@ -27,59 +27,63 @@
         }
         @keyframes coin-float {
             0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(10deg); box-shadow: 0 0 20px gold; }
+            50% { transform: translateY(-15px) rotate(15deg); box-shadow: 0 0 25px gold; }
         }
         .neon-text { animation: neon-flicker 3s infinite alternate; font-family: 'Courier New', monospace; }
-        .coming-soon-glow { animation: super-glow 1.5s infinite; color: #4ade80; font-family: 'Courier New', monospace; }
-        
+        .coming-soon-glow { animation: super-glow 1.5s infinite; color: #ff7a00; font-family: 'Courier New', monospace; }
         .vending-machine-body {
-            background: #1a1a2e; border: 15px solid #24243e; border-radius: 50px;
-            width: 100%; max-width: 1200px; padding: 40px;
-            box-shadow: 0 30px 100px rgba(0,0,0,0.9), 0 0 40px rgba(0,255,170,0.15);
+            background: #121225; border: 15px solid #24243e; border-radius: 60px;
+            width: 100%; max-width: 1200px; padding: 45px;
+            box-shadow: 0 40px 120px rgba(0,0,0,0.8), 0 0 60px rgba(255,122,0,0.1);
             position: relative;
         }
         .glass-window {
-            background: rgba(0, 0, 0, 0.6); border: 6px solid #333; border-radius: 25px;
-            padding: 35px; box-shadow: inset 0 0 60px rgba(0,0,0,1); margin-bottom: 40px;
+            background: rgba(0, 0, 0, 0.7); border: 6px solid #333; border-radius: 30px;
+            padding: 35px; box-shadow: inset 0 0 80px rgba(0,0,0,1); margin-bottom: 45px;
         }
+        .item-img-container {
+            aspect-ratio: 1/1; background: #000; border-radius: 12px; overflow: hidden;
+            display: flex; align-items: center; justify-content: center; position: relative;
+        }
+        .item-img-container img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.3s; }
+        .group:hover .item-img-container img { opacity: 1; transform: scale(1.05); }
         .receipt-segment {
-            background: #fff; color: #000; padding: 8px 12px; font-family: 'Courier New', monospace;
-            font-size: 10px; font-weight: 900; border-bottom: 1px dashed #aaa; animation: receipt-flow 0.4s ease-out forwards;
-            width: 140px; margin: 0 auto;
+            background: #fff; color: #000; padding: 10px 15px; font-family: 'Courier New', monospace;
+            font-size: 11px; font-weight: 900; border-bottom: 1px dashed #ccc; 
+            animation: receipt-flow 0.5s ease-out forwards; width: 150px; margin: 0 auto;
         }
-        .receipt-exit { width: 160px; height: 4px; background: #000; margin: 10px auto 0; border-top: 2px solid #333; position: relative; z-index: 5; }
-        #receipt-stream { display: flex; flex-direction: column-reverse; align-items: center; max-height: 250px; overflow-y: hidden; mask-image: linear-gradient(to bottom, black 50%, transparent 100%); }
+        .receipt-exit { width: 170px; height: 6px; background: #000; margin: 10px auto 0; border-top: 2px solid #333; }
+        #receipt-stream { display: flex; flex-direction: column-reverse; align-items: center; max-height: 250px; overflow: hidden; }
         .delivery-slot {
-            background: #05050a; height: 100px; border-radius: 20px; border-top: 10px solid #111;
-            box-shadow: inset 0 15px 30px rgba(0,0,0,1); display: flex; align-items: center; justify-content: center; position: relative;
+            background: #05050a; height: 120px; border-radius: 25px; border-top: 12px solid #111;
+            box-shadow: inset 0 20px 40px rgba(0,0,0,1); display: flex; align-items: center; justify-content: center; position: relative;
         }
-        .lucky-coin { width: 30px; height: 30px; background: gold; border: 2px solid #b8860b; border-radius: 50%; cursor: pointer; position: absolute; display: flex; align-items: center; justify-content: center; color: #b8860b; font-weight: bold; font-size: 14px; animation: coin-float 2s infinite ease-in-out; z-index: 40; box-shadow: 0 0 10px rgba(255,215,0,0.5); user-select: none; }
-        .voucher { background: linear-gradient(45deg, #ff00cc, #3333ff); color: white; padding: 10px 20px; border-radius: 5px; font-family: 'Courier New', monospace; font-weight: bold; box-shadow: 0 0 20px #ff00cc; cursor: pointer; z-index: 50; }
+        .lucky-coin { width: 35px; height: 35px; background: gold; border: 2px solid #b8860b; border-radius: 50%; cursor: pointer; position: absolute; display: flex; align-items: center; justify-content: center; color: #b8860b; font-weight: bold; animation: coin-float 2s infinite; z-index: 40; }
+        .voucher { background: linear-gradient(45deg, #ff7a00, #ff00cc); color: white; padding: 12px 25px; border-radius: 8px; font-weight: bold; box-shadow: 0 0 30px #ff7a00; cursor: pointer; z-index: 50; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     </style>
 </head>
 <body class="text-white">
 
-    <div class="fixed top-1/2 -right-1 transform -translate-y-1/2 z-[150] flex flex-col gap-2">
-        <button onclick="toggleCartModal()" class="bg-green-600 hover:bg-green-500 p-5 rounded-l-2xl shadow-[0_0_20px_rgba(0,255,170,0.5)] relative transition-all text-black">
+    <div class="fixed top-1/2 -right-1 transform -translate-y-1/2 z-[150] flex flex-col gap-3">
+        <button onclick="toggleCartModal()" class="bg-[#ff7a00] hover:bg-orange-400 p-5 rounded-l-2xl shadow-lg relative transition-all text-black">
             <i class="fas fa-shopping-cart text-2xl"></i>
-            <span id="cart-count" class="absolute -top-2 -left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full border-2 border-[#1a1a2e]">0</span>
+            <span id="cart-count" class="absolute -top-2 -left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full border-2 border-[#121225]">0</span>
         </button>
-        <a href="mailto:contact@itznel.com" class="bg-[#120821] border-l border-y border-green-400 text-green-400 p-5 rounded-l-2xl shadow-[0_0_15px_rgba(0,255,170,0.2)] hover:bg-green-400 hover:text-black transition-all text-center">
+        <a href="mailto:contact@itznel.com" class="bg-[#1a1a2e] border-l border-orange-500 text-orange-500 p-5 rounded-l-2xl shadow-md hover:bg-orange-500 hover:text-black transition-all text-center">
             <i class="fas fa-envelope text-2xl"></i>
         </a>
     </div>
 
     <div class="vending-machine-body">
-        <header class="flex flex-col md:flex-row items-center justify-between gap-6 mb-12 py-6 border-b border-white/10 px-4">
+        <header class="flex flex-col md:flex-row items-center justify-between gap-6 mb-12 py-6 border-b border-white/5 px-4">
             <div class="text-left">
                 <h1 class="text-4xl font-extrabold neon-text tracking-tighter uppercase">ITZNEL STICKERS COLLECTION</h1>
-                <p class="text-green-400 opacity-60 tracking-[0.3em] uppercase text-[10px] mt-1">Selected Archive & Shop</p>
+                <p class="text-orange-500 opacity-60 tracking-[0.4em] uppercase text-[10px] mt-2">Vending Archive & Shop</p>
             </div>
             <div class="flex items-center gap-4">
-                <button class="border border-green-400 text-green-400 px-4 py-2 rounded-full text-xs font-black">DESIGNER ALSO?</button>
-                <button class="border border-white/20 text-white/50 px-4 py-2 rounded-full text-xs font-bold">ABOUT ME</button>
+                <button class="border border-orange-500/30 text-orange-500/50 px-5 py-2 rounded-full text-[10px] font-black uppercase">Designer Info</button>
+                <button class="border border-white/10 text-white/30 px-5 py-2 rounded-full text-[10px] font-bold uppercase">About</button>
             </div>
         </header>
 
@@ -87,79 +91,90 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 <script>
                     const products = [
-                        { id: 1, name: "SPECIAL EDITION#1", price: 150, image: "s1.jpg" },
+                        { id: 1, name: "12/02/26 SPECIAL EDITION #1", price: 150, image: "s1.jpg" },
                         { id: 2, name: "復刻綜合三部曲", price: 150, image: "s2.jpg" },
                         { id: 3, name: "不速之客", price: 150, image: "s3.jpg" },
                         { id: 4, name: "Huh山甲?", price: 150, image: "s4.jpg" }
                     ];
+
                     products.forEach((p, i) => {
-                        const titleClass = (p.id === 1) ? "text-[14px]" : "text-lg";
                         document.write(`
-                        <div class="bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/10 hover:border-green-400/60 transition-all p-4 group">
-                            <div class="aspect-square bg-black/40 flex items-center justify-center relative mb-4 rounded-lg overflow-hidden">
-                                <img src="${p.image}" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-all" onerror="this.style.opacity='0.1'">
-                                <span class="absolute inset-0 flex items-center justify-center text-[12px] font-mono font-bold text-green-400 tracking-widest group-hover:opacity-0 transition-opacity uppercase">ITEM_0${p.id}</span>
+                        <div class="bg-white/5 backdrop-blur-md rounded-3xl overflow-hidden border border-white/5 hover:border-orange-500/50 transition-all p-5 group">
+                            <div class="item-img-container mb-5">
+                                <img src="${p.image}" onerror="this.src='https://via.placeholder.com/400x400/111/ff7a00?text=ITEM_0${p.id}'">
+                                <span class="absolute top-3 left-3 bg-black/80 text-[11px] font-mono font-bold text-orange-500 px-2 py-1 rounded border border-orange-500/30 uppercase">ITEM_0${p.id}</span>
                             </div>
-                            <div class="flex justify-between items-center mb-4 min-h-[40px]">
-                                <h3 class="font-bold ${titleClass} text-white font-mono uppercase leading-tight">${p.name}</h3>
-                                <span class="text-green-400 font-mono font-bold">$${p.price}</span>
+                            <div class="mb-5 min-h-[45px]">
+                                <h3 class="font-bold text-[13px] text-white font-mono uppercase leading-tight tracking-tight">${p.name}</h3>
+                                <div class="text-orange-500 font-mono font-bold mt-1">$${p.price}</div>
                             </div>
                             <div class="flex flex-col gap-3">
-                                <div class="flex items-center border border-white/10 rounded-lg overflow-hidden h-10 bg-black/20">
-                                    <button onclick="changeQty(${i}, -1)" class="w-10 h-full hover:bg-green-400 hover:text-black">-</button>
-                                    <input type="number" id="qty-${i}" value="1" min="1" class="w-full h-full bg-transparent text-center text-sm outline-none text-white font-mono" readonly>
-                                    <button onclick="changeQty(${i}, 1)" class="w-10 h-full hover:bg-green-400 hover:text-black">+</button>
+                                <div class="flex items-center border border-white/5 rounded-xl overflow-hidden h-10 bg-black/40 shadow-inner">
+                                    <button onclick="changeQty(${i}, -1)" class="w-12 h-full hover:bg-white/10 transition-colors">-</button>
+                                    <input type="number" id="qty-${i}" value="1" min="1" class="w-full h-full bg-transparent text-center text-xs outline-none font-mono text-white" readonly>
+                                    <button onclick="changeQty(${i}, 1)" class="w-12 h-full hover:bg-white/10 transition-colors">+</button>
                                 </div>
-                                <button onclick="addToCart(${i})" class="w-full border border-green-400 text-green-400 hover:bg-green-400 hover:text-black font-bold py-2 rounded-lg transition-all text-xs tracking-widest uppercase font-mono">ADD TO CART</button>
+                                <button onclick="addToCart(${i})" class="w-full bg-orange-600/10 border border-orange-600/50 text-orange-500 hover:bg-orange-600 hover:text-black font-black py-3 rounded-xl transition-all text-[10px] tracking-widest uppercase font-mono">Push to Order</button>
                             </div>
                         </div>
                         `);
                     });
                 </script>
+                
                 <script>
                     for (let j = 0; j < 4; j++) {
-                        document.write(`<div class="bg-black/20 rounded-2xl border border-green-500/20 relative flex flex-col items-center justify-center aspect-square opacity-50 shadow-[inset_0_0_20px_rgba(0,0,0,0.5)]"><div class="text-green-400/20 text-3xl mb-3"><i class="fas fa-lock"></i></div><span class="coming-soon-glow font-bold text-sm tracking-[0.2em] text-center px-4 uppercase leading-relaxed">COMING...<br>TOMORROW?</span></div>`);
+                        document.write(`
+                        <div class="bg-black/30 rounded-3xl border border-white/5 flex flex-col items-center justify-center aspect-square opacity-40 shadow-[inset_0_0_40px_rgba(0,0,0,0.8)]">
+                            <i class="fas fa-lock text-orange-900 text-2xl mb-3"></i>
+                            <span class="coming-soon-glow font-bold text-[10px] tracking-widest uppercase">Locked</span>
+                        </div>`);
                     }
                 </script>
             </div>
         </div>
 
-        <div class="grid grid-cols-4 gap-8 items-start bg-[#0f0f1a] p-8 rounded-3xl border-2 border-white/5 mb-10 relative">
-            <div class="flex flex-col items-center gap-2 font-mono pt-4">
-                <div id="coin-target" class="w-3 h-12 bg-[#111] border-2 border-gray-700 rounded-full shadow-inner"></div>
-                <span class="text-[9px] text-gray-600 uppercase font-bold">Coin</span>
+        <div class="grid grid-cols-4 gap-8 items-start bg-black/40 p-10 rounded-[40px] border border-white/5 mb-10 relative">
+            <div class="flex flex-col items-center gap-3 font-mono pt-4">
+                <div id="coin-target" class="w-4 h-14 bg-black border-2 border-zinc-800 rounded-full shadow-inner flex justify-center py-2">
+                    <div class="w-1 h-3 bg-orange-900/50 rounded-full animate-pulse"></div>
+                </div>
+                <span class="text-[8px] text-zinc-600 uppercase font-black tracking-widest">Coin Slot</span>
             </div>
+            
             <div class="col-span-2">
-                <div id="vending-screen" class="bg-black border border-green-900/40 p-4 rounded-xl font-mono text-green-500 text-xs text-center uppercase tracking-tighter shadow-[inset_0_0_20px_rgba(0,255,170,0.1)]">Select Sticker & Confirm Order</div>
+                <div id="vending-screen" class="bg-[#050505] border border-orange-900/30 p-5 rounded-2xl font-mono text-orange-500 text-[11px] text-center uppercase tracking-widest min-h-[60px] flex items-center justify-center shadow-inner">
+                    Ready to Serve
+                </div>
                 <div class="receipt-exit"></div>
                 <div id="receipt-stream" class="no-scrollbar"></div>
             </div>
-            <div class="flex justify-center gap-4 pt-4">
-                <div class="w-6 h-6 rounded-full bg-red-900 border-2 border-red-500 animate-pulse"></div>
-                <div class="w-6 h-6 rounded-full bg-green-900 border-2 border-green-500"></div>
+
+            <div class="flex flex-col items-center justify-center gap-5 pt-4">
+                <div class="w-8 h-8 rounded-full bg-orange-900/20 border-2 border-orange-600 animate-pulse shadow-[0_0_15px_rgba(255,122,0,0.3)]"></div>
+                <div class="w-3 h-3 rounded-full bg-zinc-800"></div>
             </div>
         </div>
 
         <div class="delivery-slot" id="delivery-slot">
-            <span class="text-xs text-white/20 font-black tracking-[1em] uppercase font-mono">Delivery Slot</span>
+            <span class="text-[10px] text-white/5 font-black tracking-[1.5em] uppercase font-mono">Collection Slot</span>
             <div id="coin-spawn-area"></div>
         </div>
     </div>
 
     <div id="cart-modal" class="fixed inset-0 z-[200] hidden flex justify-end">
-        <div class="fixed inset-0 bg-black/80 backdrop-blur-sm" onclick="toggleCartModal()"></div>
-        <div class="relative w-full max-lg bg-[#1a0b2e] h-full shadow-2xl border-l border-green-400/30 p-10 flex flex-col overflow-y-auto no-scrollbar">
-            <div class="flex justify-between items-center mb-10"><h2 class="text-3xl font-bold text-green-400 neon-text uppercase">Your Order</h2><button onclick="toggleCartModal()" class="text-white/30 text-4xl">&times;</button></div>
-            <div id="cart-items-list" class="flex-grow space-y-5 mb-10"></div>
-            <div class="border-t border-white/10 pt-8">
-                <div class="flex justify-between text-2xl font-bold mb-8 font-mono text-green-400"><span>TOTAL</span><span id="cart-total">$0</span></div>
-                <form id="checkout-form" action="https://formspree.io/f/mojnevzw" method="POST" class="space-y-5">
+        <div class="fixed inset-0 bg-black/90 backdrop-blur-md" onclick="toggleCartModal()"></div>
+        <div class="relative w-full max-w-md bg-[#121225] h-full shadow-2xl border-l border-orange-500/20 p-10 flex flex-col overflow-y-auto no-scrollbar">
+            <div class="flex justify-between items-center mb-12"><h2 class="text-2xl font-black text-orange-500 uppercase">Your Order</h2><button onclick="toggleCartModal()" class="text-zinc-600 hover:text-white text-3xl">&times;</button></div>
+            <div id="cart-items-list" class="flex-grow space-y-6 mb-12"></div>
+            <div class="border-t border-white/5 pt-8">
+                <div class="flex justify-between text-2xl font-black mb-10 font-mono text-orange-500"><span>TOTAL</span><span id="cart-total">$0</span></div>
+                <form id="checkout-form" action="https://formspree.io/f/mojnevzw" method="POST" class="space-y-4">
                     <input type="hidden" name="Order_Details" id="hidden-items">
                     <input type="hidden" name="Total_Price" id="hidden-total">
-                    <input type="text" name="Name" id="cust-name" placeholder="收件人姓名" required maxlength="4" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white outline-none focus:border-green-400">
-                    <input type="tel" name="Phone" id="cust-phone" placeholder="聯絡電話" required pattern="[0-9]{10}" maxlength="10" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white outline-none focus:border-green-400">
-                    <textarea name="Address" id="cust-addr" placeholder="收件地址" required class="w-full bg-white/5 border border-white/10 rounded-xl p-4 h-24 text-white outline-none focus:border-green-400 no-scrollbar transition-all"></textarea>
-                    <button type="submit" class="w-full bg-green-600 text-black font-black py-5 rounded-2xl hover:bg-white transition-all uppercase tracking-widest text-sm font-mono">Confirm Order</button>
+                    <input type="text" name="Name" placeholder="Recipient Name" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-sm text-white focus:border-orange-500 outline-none">
+                    <input type="tel" name="Phone" placeholder="Phone Number" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-sm text-white focus:border-orange-500 outline-none">
+                    <textarea name="Address" placeholder="Shipping Address" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 h-32 text-sm text-white focus:border-orange-500 outline-none no-scrollbar"></textarea>
+                    <button type="submit" class="w-full bg-orange-600 text-black font-black py-5 rounded-2xl hover:bg-white transition-all uppercase tracking-widest text-xs font-mono shadow-xl shadow-orange-900/20">Confirm & Checkout</button>
                 </form>
             </div>
         </div>
@@ -171,7 +186,10 @@
         let screenTimer = null;
 
         function toggleCartModal() { document.getElementById('cart-modal').classList.toggle('hidden'); }
-        function changeQty(i, d) { let el = document.getElementById(`qty-${i}`); el.value = Math.max(1, parseInt(el.value) + d); }
+        function changeQty(i, d) { 
+            let el = document.getElementById(`qty-${i}`);
+            el.value = Math.max(1, parseInt(el.value) + d);
+        }
 
         function addToCart(i) {
             const qtyInput = document.getElementById(`qty-${i}`);
@@ -182,39 +200,49 @@
             updateUI();
             addReceiptSegment(p.name, qty);
             qtyInput.value = 1;
-            event.target.innerText = "PUSHED!";
-            setTimeout(() => { event.target.innerText = "ADD TO CART"; }, 600);
+            
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = "ADDED!";
+            btn.style.backgroundColor = "#ff7a00";
+            btn.style.color = "#000";
+            setTimeout(() => { 
+                btn.innerText = originalText;
+                btn.style.backgroundColor = "";
+                btn.style.color = "";
+            }, 800);
         }
 
         function addReceiptSegment(name, qty) {
             const screen = document.getElementById('vending-screen');
             const stream = document.getElementById('receipt-stream');
             clearTimeout(screenTimer);
-            screen.innerText = `RESERVED: ${name} x${qty}`;
+            screen.innerText = `Selected: ${name.slice(0,15)}...`;
             screen.style.color = "#fff";
             const segment = document.createElement('div');
             segment.className = 'receipt-segment';
-            segment.innerHTML = `<div style="opacity:0.3; font-size:7px;">#${Math.floor(Math.random()*9000+1000)}</div><div>${name}</div><div style="display:flex; justify-content:space-between;"><span>QTY: ${qty}</span><span>$${150*qty}</span></div>`;
+            segment.innerHTML = `<div style="opacity:0.2; font-size:6px; margin-bottom:4px;">REF_${Math.floor(Math.random()*99999)}</div><div>${name}</div><div style="display:flex; justify-content:space-between; font-size:9px;"><span>QTY: ${qty}</span><span>$${150*qty}</span></div>`;
             stream.appendChild(segment);
             if (stream.children.length > 5) stream.removeChild(stream.firstChild);
-            screenTimer = setTimeout(() => { screen.innerText = "Select Sticker & Confirm Order"; screen.style.color = "#10b981"; }, 3000);
+            screenTimer = setTimeout(() => { screen.innerText = "Ready to Serve"; screen.style.color = "#ff7a00"; }, 4000);
         }
 
         function updateUI() {
             document.getElementById('cart-count').innerText = cart.reduce((s, x) => s + x.qty, 0);
             const list = document.getElementById('cart-items-list');
             let total = 0;
-            if(cart.length === 0) { list.innerHTML = `<div class="text-white/20 text-center py-20 font-mono text-sm uppercase">Empty</div>`; } 
+            if(cart.length === 0) { list.innerHTML = `<div class="text-white/10 text-center py-20 font-mono text-xs uppercase">Cart is empty</div>`; }
             else {
                 list.innerHTML = cart.map((x, idx) => {
                     total += x.price * x.qty;
-                    return `<div class="flex justify-between items-center bg-white/5 p-5 rounded-2xl border border-white/5"><div class="font-bold text-sm uppercase font-mono">${x.name} <span class="text-green-400">x ${x.qty}</span></div><div class="flex items-center gap-4"><div class="text-green-400 font-mono">$${x.price*x.qty}</div><button onclick="removeFromCart(${idx})" class="text-white/30 hover:text-red-500"><i class="fas fa-trash-alt"></i></button></div></div>`;
+                    return `<div class="flex justify-between items-center bg-white/5 p-6 rounded-3xl border border-white/5"><div class="font-bold text-xs uppercase font-mono leading-tight">${x.name} <br><span class="text-orange-500 mt-1 inline-block">x ${x.qty}</span></div><div class="flex items-center gap-5"><div class="text-white font-mono font-bold">$${x.price*x.qty}</div><button onclick="removeFromCart(${idx})" class="text-zinc-600 hover:text-red-500"><i class="fas fa-trash-alt"></i></button></div></div>`;
                 }).join('');
             }
             document.getElementById('cart-total').innerText = `$${total}`;
             document.getElementById('hidden-items').value = cart.map(x => `${x.name}(${x.qty})`).join(' | ');
             document.getElementById('hidden-total').value = `$${total}`;
         }
+
         function removeFromCart(i) { cart.splice(i, 1); updateUI(); }
 
         function spawnCoin() {
@@ -225,20 +253,19 @@
             coin.style.left = (Math.random() * 80 + 10) + '%';
             coin.style.bottom = '20px';
             coin.onclick = function() {
-                coin.style.transition = 'all 0.5s ease-in-out';
-                coin.style.left = '5%'; coin.style.bottom = '150px';
-                coin.style.transform = 'scale(0.1) rotate(720deg)'; coin.style.opacity = '0';
+                coin.style.transition = 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                coin.style.left = '5%'; coin.style.bottom = '180px';
+                coin.style.transform = 'scale(0.1) rotate(1080deg)'; coin.style.opacity = '0';
                 setTimeout(() => {
                     coinsCollected++;
                     const screen = document.getElementById('vending-screen');
-                    screen.innerText = `COINS COLLECTED: ${coinsCollected}/20`;
-                    screen.style.color = "gold";
+                    screen.innerText = `LUCKY COINS: ${coinsCollected}/20`;
+                    screen.style.color = "#ffd700";
                     coin.remove();
                     if (coinsCollected >= 20) { spawnVoucher(); coinsCollected = 0; }
-                }, 500);
+                }, 600);
             };
             area.appendChild(coin);
-            // 恢復 5 秒到 100 秒隨機掉落
             setTimeout(spawnCoin, Math.random() * (100000 - 5000) + 5000);
         }
 
@@ -246,18 +273,15 @@
             const slot = document.getElementById('delivery-slot');
             const voucher = document.createElement('div');
             voucher.className = 'voucher';
-            voucher.innerHTML = '🎟️ FREE TICKET (CLAIM)';
+            voucher.innerHTML = '🎟️ CLAIM SPECIAL REWARD';
             voucher.onclick = () => {
-                const reward = { id: 999, name: "FREE STICKER VOUCHER", price: 0, qty: 1 };
-                cart.push(reward);
+                cart.push({ id: 999, name: "FREE STICKER VOUCHER", price: 0, qty: 1 });
                 updateUI();
-                alert("恭喜！免費兌換券已加入購物車！");
+                alert("Lucky you! Your free sticker voucher has been added to cart!");
                 voucher.remove();
             };
             slot.appendChild(voucher);
         }
-
-        // 啟動機台
         setTimeout(spawnCoin, 5000);
     </script>
 </body>
