@@ -14,7 +14,6 @@
             overflow-x: hidden;
         }
         
-        /* 1. ITZNEL COLLECTION 霓虹特效補回 */
         @keyframes neon-flicker {
             0%, 18%, 22%, 25%, 53%, 57%, 100% { text-shadow: 0 0 4px #fff, 0 0 11px #fff, 0 0 40px #ff7a00; color: #fff; }
             20%, 24%, 55% { text-shadow: none; color: #3d1c00; }
@@ -36,7 +35,6 @@
         }
         .img-container img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.9; }
         
-        /* 螢幕與收據樣式優化 */
         #screen {
             background: #000; color: #ff7a00; font-family: monospace;
             padding: 15px; border-radius: 12px; text-align: center;
@@ -51,12 +49,20 @@
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* 金幣 */
         .coin {
             width: 32px; height: 32px; background: #ffd700; border: 2px solid #b8860b;
             border-radius: 50%; position: absolute; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             color: #8b4513; font-weight: bold; z-index: 50;
+        }
+        
+        /* 付款方式下拉選單樣式 */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='orange' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
         }
     </style>
 </head>
@@ -114,9 +120,18 @@
             </div>
             <form action="https://formspree.io/f/mojnevzw" method="POST" class="space-y-4">
                 <input type="hidden" name="Order_Summary" id="hidden-data">
-                <input type="text" name="Name" placeholder="Recipient Name" required class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white outline-none focus:border-orange-500">
-                <input type="tel" name="Phone" placeholder="Phone Number" required class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white outline-none focus:border-orange-500">
-                <textarea name="Address" placeholder="Address" required class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white h-24 outline-none focus:border-orange-500 no-scrollbar"></textarea>
+                <input type="text" name="Name" placeholder="Recipient Name (收件人姓名)" required class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white outline-none focus:border-orange-500">
+                <input type="tel" name="Phone" placeholder="Phone Number (聯絡電話)" required class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white outline-none focus:border-orange-500">
+                <textarea name="Address" placeholder="Address (收件地址)" required class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white h-24 outline-none focus:border-orange-500 no-scrollbar"></textarea>
+                
+                <div class="relative">
+                    <select name="Payment_Method" required class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white outline-none focus:border-orange-500 cursor-pointer">
+                        <option value="" disabled selected class="bg-[#1a1a2e]">Select Payment (選擇付款方式)</option>
+                        <option value="Bank Transfer" class="bg-[#1a1a2e]">Bank Transfer (銀行轉帳)</option>
+                        <option value="Cash on Delivery" class="bg-[#1a1a2e]">Cash on Delivery (貨到付款)</option>
+                    </select>
+                </div>
+
                 <button type="submit" class="w-full bg-orange-500 text-black font-black py-5 rounded-2xl text-lg uppercase tracking-widest shadow-xl">Confirm Order</button>
             </form>
         </div>
@@ -124,7 +139,7 @@
 
     <script>
         const items = [
-            { id: 1, name: "SPECIAL EDITION #1", price: 150, img: "s1.jpg" },
+            { id: 1, name: "12/02/26 SPECIAL EDITION #1", price: 150, img: "s1.jpg" },
             { id: 2, name: "復刻綜合三部曲", price: 150, img: "s2.jpg" },
             { id: 3, name: "不速之客", price: 150, img: "s3.jpg" },
             { id: 4, name: "Huh山甲?", price: 150, img: "s4.jpg" }
@@ -168,20 +183,14 @@
             const qtyInput = document.getElementById(`qty-${i}`);
             const qty = parseInt(qtyInput.value);
             const item = items[i];
-            
             const found = cart.find(x => x.id === item.id);
             if(found) found.q += qty; else cart.push({...item, q: qty});
-            
             update();
             print(item.name, qty, item.price);
-            
-            // 數量回到 1
             qtyInput.value = 1;
-
             if(Math.random() < 0.3) dropCoin();
         }
 
-        // 2. 完整收據邏輯
         function print(name, qty, price) {
             const box = document.getElementById('receipt-box');
             const line = document.createElement('div');
@@ -189,7 +198,6 @@
             line.innerHTML = `<div style="display:flex; justify-content:space-between"><span>${name} x${qty}</span><span>$${price*qty}</span></div>`;
             box.appendChild(line);
             if(box.children.length > 4) box.removeChild(box.firstChild);
-            
             document.getElementById('screen').innerText = "RESERVED: " + name + " x" + qty;
             setTimeout(() => { document.getElementById('screen').innerText = "COINS: " + coinCount + "/20"; }, 3000);
         }
