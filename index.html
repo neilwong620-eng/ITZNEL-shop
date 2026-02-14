@@ -19,13 +19,11 @@
             20%, 24%, 55% { text-shadow: none; color: #3d1c00; }
         }
         
-        /* 封面旋轉動畫 */
         @keyframes slow-rotate {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(360deg); }
+            0% { transform: perspective(1000px) rotateY(0deg); }
+            100% { transform: perspective(1000px) rotateY(360deg); }
         }
-        .rotate-card { animation: slow-rotate 8s linear infinite; perspective: 1000px; }
-
+        .rotate-card { animation: slow-rotate 10s linear infinite; }
         .neon-text { animation: neon-flicker 3s infinite alternate; font-family: 'Courier New', monospace; }
 
         .vending-body {
@@ -42,7 +40,7 @@
             border-radius: 12px; overflow: hidden; position: relative;
             display: flex; align-items: center; justify-content: center;
         }
-        .img-container img { width: 90%; height: 90%; object-fit: contain; display: block; }
+        .img-container img { width: 85%; height: 85%; object-fit: contain; display: block; }
         
         #screen {
             background: #000; color: #ff7a00; font-family: monospace;
@@ -55,34 +53,45 @@
             border-bottom: 1px dashed #ccc; margin: 0 auto; font-weight: bold;
         }
         
-        .coin {
-            width: 32px; height: 32px; background: #ffd700; border: 2px solid #b8860b;
-            border-radius: 50%; position: absolute; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            color: #8b4513; font-weight: bold; z-index: 50;
-        }
-        
-        /* 預覽遮罩 */
-        #preview-modal {
+        #preview-modal, #order-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95);
-            z-index: 300; display: none; align-items: center; justify-content: center; padding: 20px;
+            z-index: 500; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
         }
-        #preview-modal img { max-width: 100%; max-height: 90vh; border-radius: 10px; box-shadow: 0 0 50px rgba(255,122,0,0.3); }
     </style>
 </head>
 <body>
 
+    <div id="order-overlay" class="text-center">
+        <div class="mb-6 text-6xl text-orange-500 animate-bounce"><i class="fas fa-check-circle"></i></div>
+        <h2 class="text-3xl font-black text-white mb-2 uppercase italic tracking-tighter">Order Received!</h2>
+        <p class="text-zinc-400 mb-8 text-sm">您的訂單已成功送出，請留意以下資訊</p>
+        
+        <div id="transfer-info" class="bg-white/5 border border-orange-500/30 p-6 rounded-2xl w-full max-w-sm mb-8 text-left hidden">
+            <h3 class="text-orange-500 font-bold mb-4 flex items-center gap-2">
+                <i class="fas fa-university"></i> 銀行轉帳資訊
+            </h3>
+            <div class="space-y-2 text-sm font-mono text-zinc-300">
+                <p>應付總額: <span id="final-total-display" class="text-white font-bold text-lg"></span></p>
+                <p>銀行代碼: <span class="text-white">822 (中國信託)</span></p>
+                <p>帳號: <span class="text-white">1234-5678-9012</span></p>
+                <p class="text-[10px] text-zinc-500 mt-4 italic">* 請於 24 小時內完成轉帳，建議截圖此頁面</p>
+            </div>
+        </div>
+
+        <button onclick="location.reload()" class="bg-orange-500 text-black font-black px-10 py-4 rounded-full uppercase tracking-widest hover:bg-white transition-all">Close</button>
+    </div>
+
     <div id="preview-modal" onclick="closePreview()">
-        <img id="preview-img" src="" alt="Preview">
-        <div class="absolute top-10 right-10 text-white text-4xl cursor-pointer">&times;</div>
+        <img id="preview-img" src="" alt="Detail" onerror="this.src='https://placehold.co/600x400/222/ff7a00?text=IMAGE+NOT+FOUND'">
+        <p class="text-orange-500 mt-6 font-mono font-bold tracking-widest animate-pulse">CLICK ANYWHERE TO CLOSE</p>
     </div>
 
     <div class="fixed top-1/2 -right-1 transform -translate-y-1/2 z-[150] flex flex-col gap-2">
-        <button onclick="openCart()" class="bg-orange-500 hover:bg-orange-400 p-4 rounded-l-2xl shadow-lg relative transition-all text-black">
+        <button onclick="openCart()" class="bg-orange-500 p-4 rounded-l-2xl shadow-lg relative text-black">
             <i class="fas fa-shopping-cart text-xl"></i>
             <span id="count" class="absolute -top-1 -left-1 bg-red-600 text-white text-[10px] px-2 py-0.5 rounded-full border-2 border-[#1a1a2e]">0</span>
         </button>
-        <a href="mailto:contact@itznel.com" class="bg-[#120821] border-l border-y border-orange-500 text-orange-500 p-4 rounded-l-2xl shadow-md hover:bg-orange-500 hover:text-black transition-all text-center">
+        <a href="mailto:contact@itznel.com" class="bg-[#120821] border-l border-y border-orange-500 text-orange-500 p-4 rounded-l-2xl shadow-md text-center">
             <i class="fas fa-envelope text-xl"></i>
         </a>
     </div>
@@ -94,14 +103,12 @@
         </header>
 
         <div class="glass-window">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="grid">
-                </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="grid"></div>
         </div>
 
         <div class="bg-black/40 p-6 rounded-3xl border border-white/5 relative">
             <div id="screen">SELECT AN ITEM</div>
             <div id="receipt-box" class="flex flex-col-reverse items-center max-h-[100px] overflow-hidden mt-2"></div>
-            
             <div class="flex justify-between items-center mt-6">
                 <div class="w-3 h-12 bg-zinc-900 rounded-full border border-zinc-800"></div>
                 <div class="flex gap-3">
@@ -127,13 +134,13 @@
             <div class="flex justify-between text-2xl font-bold text-orange-500 mb-6">
                 <span>TOTAL</span><span id="total">$0</span>
             </div>
-            <form action="https://formspree.io/f/mojnevzw" method="POST" class="space-y-4">
+            <form id="vending-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
                 <input type="hidden" name="Order_Summary" id="hidden-data">
                 <input type="hidden" name="Total_Amount" id="hidden-total">
                 <input type="text" name="Name" placeholder="Recipient Name" required maxlength="4" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white outline-none">
                 <input type="tel" name="Phone" placeholder="Phone Number" required pattern="[0-9]{10}" maxlength="10" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white outline-none">
                 <textarea name="Address" placeholder="Shipping Address" required class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white h-24 outline-none no-scrollbar"></textarea>
-                <select name="Payment_Method" required class="w-full bg-zinc-900 border border-white/10 p-4 rounded-xl text-white outline-none appearance-none">
+                <select name="Payment_Method" id="payment-select" required class="w-full bg-zinc-900 border border-white/10 p-4 rounded-xl text-white outline-none">
                     <option value="" disabled selected>Payment Method</option>
                     <option value="Bank_Transfer">銀行轉帳</option>
                     <option value="Cash_on_Delivery">貨到付款</option>
@@ -145,11 +152,10 @@
 
     <script>
         const items = [
-            // 第一款更新封面與大圖預覽路徑
             { id: 1, name: "SPECIAL EDITION #1", price: 150, img: "s1.jpg3.png", detailImg: "s1.jpg2.jpg" },
-            { id: 2, name: "復刻綜合三部曲", price: 150, img: "s2.jpg", detailImg: "s2.jpg" },
-            { id: 3, name: "不速之客", price: 150, img: "s3.jpg", detailImg: "s3.jpg" },
-            { id: 4, name: "Huh山甲?", price: 150, img: "s4.jpg", detailImg: "s4.jpg" }
+            { id: 2, name: "復刻綜合三部曲", price: 150, img: "復刻綜合三部曲.png", detailImg: "復刻綜合三部曲.png" },
+            { id: 3, name: "不速之客", price: 150, img: "不速之客.jpg", detailImg: "不速之客.jpg" },
+            { id: 4, name: "Huh山甲?", price: 150, img: "HUH三甲.jpg", detailImg: "HUH三甲.jpg" }
         ];
 
         let cart = [];
@@ -162,19 +168,17 @@
                     <div class="flex flex-col relative group">
                         <div class="img-container">
                             <img src="${item.img}" class="${item.id === 1 ? 'rotate-card' : ''}" onerror="this.src='https://placehold.co/400x400/222/ff7a00?text=ITEM+0${item.id}'">
-                            <div onclick="showPreview('${item.detailImg}')" class="absolute top-2 right-2 bg-orange-500/80 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
-                                <i class="fas fa-search-plus text-black text-xs"></i>
+                            <div onclick="showPreview('${item.detailImg}')" class="absolute top-2 right-2 bg-orange-500 w-9 h-9 rounded-full flex items-center justify-center cursor-pointer shadow-lg active:scale-95 transition-all">
+                                <i class="fas fa-search-plus text-black text-sm"></i>
                             </div>
                         </div>
                         <div class="text-[11px] font-bold text-white mt-3 text-center h-8 leading-tight uppercase font-mono">${item.name}</div>
                         <div class="text-orange-500 text-xs font-mono text-center mb-3">$${item.price}</div>
-                        
                         <div class="flex items-center border border-white/10 rounded-lg overflow-hidden h-9 mb-3 bg-black/20">
                             <button onclick="changeQty(${i}, -1)" class="w-10 h-full hover:bg-white/10 text-white font-bold">-</button>
                             <input type="number" id="qty-${i}" value="1" min="1" class="w-full h-full bg-transparent text-center text-xs outline-none text-white font-mono" readonly>
                             <button onclick="changeQty(${i}, 1)" class="w-10 h-full hover:bg-white/10 text-white font-bold">+</button>
                         </div>
-
                         <button onclick="buy(${i})" class="w-full bg-orange-500 border border-orange-500 text-black text-[10px] py-2 rounded-lg font-black uppercase active:translate-y-1 transition-all">Select</button>
                     </div>
                 `;
@@ -184,20 +188,41 @@
             }
         }
 
-        // 放大鏡功能
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = new FormData(form);
+            const payment = document.getElementById('payment-select').value;
+            const finalTotal = document.getElementById('total').innerText;
+
+            try {
+                // 發送到 Formspree
+                await fetch('https://formspree.io/f/mojnevzw', {
+                    method: 'POST',
+                    body: data,
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                // 隱藏購物車並開啟確認視窗
+                document.getElementById('modal').classList.add('hidden');
+                document.getElementById('order-overlay').style.display = 'flex';
+                
+                if(payment === 'Bank_Transfer') {
+                    document.getElementById('transfer-info').classList.remove('hidden');
+                    document.getElementById('final-total-display').innerText = finalTotal;
+                }
+            } catch (error) {
+                alert("發送訂單時出錯，請稍後再試。");
+            }
+        }
+
         function showPreview(url) {
             document.getElementById('preview-img').src = url;
             document.getElementById('preview-modal').style.display = 'flex';
         }
 
-        function closePreview() {
-            document.getElementById('preview-modal').style.display = 'none';
-        }
-
-        function changeQty(i, d) {
-            let el = document.getElementById(`qty-${i}`);
-            el.value = Math.max(1, parseInt(el.value) + d);
-        }
+        function closePreview() { document.getElementById('preview-modal').style.display = 'none'; }
+        function changeQty(i, d) { let el = document.getElementById(`qty-${i}`); el.value = Math.max(1, parseInt(el.value) + d); }
 
         function buy(i) {
             const qtyInput = document.getElementById(`qty-${i}`);
@@ -219,14 +244,12 @@
             box.appendChild(line);
             if(box.children.length > 4) box.removeChild(box.firstChild);
             document.getElementById('screen').innerText = "ADDED: " + name + " x" + qty;
-            setTimeout(() => { document.getElementById('screen').innerText = "COINS: " + coinCount + "/20"; }, 3000);
         }
 
         function dropCoin() {
             const area = document.getElementById('coin-area');
             const c = document.createElement('div');
-            c.className = 'coin';
-            c.innerText = '$';
+            c.className = 'coin'; c.innerText = '$';
             c.style.left = Math.random() * 80 + '%';
             c.onclick = () => {
                 coinCount++;
@@ -238,15 +261,12 @@
                     v.innerText = '🎟️ FREE VOUCHER (CLAIM)';
                     v.onclick = () => {
                         cart.push({id: 999, name: "FREE STICKER VOUCHER", price: 0, q: 1});
-                        update();
-                        v.remove();
-                        coinCount = 0;
+                        update(); v.remove(); coinCount = 0;
                     };
                     document.getElementById('slot').appendChild(v);
                 }
             };
             area.appendChild(c);
-            setTimeout(() => { if(c) c.remove(); }, 8000);
         }
 
         function update() {
