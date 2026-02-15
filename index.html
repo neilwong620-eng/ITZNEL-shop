@@ -19,7 +19,6 @@
             20%, 24%, 55% { text-shadow: none; color: #3d1c00; }
         }
         
-        /* 封面 3D 旋轉動畫 */
         @keyframes slow-rotate {
             0% { transform: perspective(1000px) rotateY(0deg); }
             100% { transform: perspective(1000px) rotateY(360deg); }
@@ -37,15 +36,12 @@
             border-radius: 25px; padding: 20px; margin-bottom: 25px;
         }
         
-        /* 統一商品圖片容器 */
         .img-container {
             width: 100%; aspect-ratio: 1/1; background: #050505;
             border-radius: 12px; overflow: hidden; position: relative;
             display: flex; align-items: center; justify-content: center;
         }
-        .img-container img { 
-            width: 85%; height: 85%; object-fit: contain; display: block; 
-        }
+        .img-container img { width: 85%; height: 85%; object-fit: contain; display: block; }
         
         #screen {
             background: #000; color: #ff7a00; font-family: monospace;
@@ -61,10 +57,6 @@
         #preview-modal, #order-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95);
             z-index: 500; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
-        }
-        #preview-img { 
-            max-width: 90%; max-height: 80vh; border-radius: 15px; 
-            box-shadow: 0 0 50px rgba(255,122,0,0.4); object-fit: contain; 
         }
 
         .coin {
@@ -89,11 +81,14 @@
             <h3 class="text-orange-500 font-bold mb-4 flex items-center gap-2">
                 <i class="fas fa-university"></i> 銀行轉帳資訊
             </h3>
-            <div class="space-y-2 text-sm font-mono text-zinc-300">
+            <div class="space-y-3 text-sm font-mono text-zinc-300">
                 <p>應付總額: <span id="final-total-display" class="text-white font-bold text-lg"></span></p>
                 <p>銀行代碼: <span class="text-white">822 (中國信託)</span></p>
-                <p>帳號: <span class="text-white">1234-5678-9012</span></p>
-                <p class="text-[10px] text-zinc-500 mt-4 italic">* 請截圖此頁面，並於 24 小時內完成轉帳</p>
+                <p class="relative">
+                    帳號: <span id="bank-account" class="text-white underline decoration-orange-500 underline-offset-4 cursor-pointer" onclick="copyAccount()">819540371626</span>
+                    <span id="copy-msg" class="absolute -top-6 left-10 bg-orange-500 text-black text-[10px] px-2 py-0.5 rounded opacity-0 transition-opacity">已複製</span>
+                </p>
+                <p class="text-[10px] text-zinc-500 mt-4 italic">* 點擊帳號可自動複製。請截圖此頁面，並於 24 小時內完成轉帳。</p>
             </div>
         </div>
 
@@ -102,7 +97,7 @@
 
     <div id="preview-modal" onclick="closePreview()">
         <img id="preview-img" src="" alt="Detail" onerror="this.src='https://placehold.co/600x400/222/ff7a00?text=IMAGE+NOT+FOUND'">
-        <p class="text-orange-500 mt-6 font-mono font-bold tracking-widest animate-pulse">CLICK ANYWHERE TO CLOSE</p>
+        <p class="text-orange-500 mt-6 font-mono font-bold tracking-widest animate-pulse uppercase">Click to Close</p>
     </div>
 
     <div class="fixed top-1/2 -right-1 transform -translate-y-1/2 z-[150] flex flex-col gap-2">
@@ -227,8 +222,16 @@
                     document.getElementById('final-total-display').innerText = finalTotal;
                 }
             } catch (error) {
-                alert("發送訂單時出錯。");
+                alert("發送失敗，請聯繫 ITZNEL。");
             }
+        }
+
+        function copyAccount() {
+            const acc = document.getElementById('bank-account').innerText;
+            navigator.clipboard.writeText(acc);
+            const msg = document.getElementById('copy-msg');
+            msg.style.opacity = '1';
+            setTimeout(() => { msg.style.opacity = '0'; }, 1500);
         }
 
         function showPreview(url) {
